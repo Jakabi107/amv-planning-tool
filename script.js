@@ -62,6 +62,12 @@ class DataManager {
         if (save) saveLastProjectToCache();
     }
 
+    deleteComment(commentToDelete, save=true){
+        this.comments = this.comments.filter(c => c !== commentToDelete);
+        renderComments();
+        if (save) saveLastProjectToCache();
+    }
+
     getAllDataObject() {
         return {
             audio: this.audioFileDataURL,
@@ -330,12 +336,25 @@ function renderComments() {
     
     commentsDisplay.innerHTML = '';
     dataManager.comments.forEach(c => {
+
         const div = document.createElement('div');
         div.className = 'comment-box';
         div.innerHTML = `
             <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
-            <p>${c.text}</p>
+            <p class="comment-text-inline">${c.text}</p>
+            <button class="comment-delete-btn" title="Delete comment">
+                <img src="images/delete.svg" alt="Delete" class="comment-delete-icon" />
+            </button>
         `;
+        
+        const btn = div.querySelector('.comment-delete-btn');
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm("Are you sure you want to delete this comment?")) {
+                dataManager.deleteComment(c);
+            }
+        });
+
         commentsDisplay.appendChild(div);
     });
 }

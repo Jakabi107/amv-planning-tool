@@ -1,3 +1,25 @@
+/* Comment delete button and icon */
+.comment-delete-btn {
+    background: #1db954;
+    border: none;
+    float: right;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.comment-delete-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.comment-text-inline {
+    display: inline;
+}
 /* Tools header bar */
 
 .tools-header {
