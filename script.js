@@ -108,7 +108,6 @@ function renderComments() {
 // Expose as global for inline onclick handlers
 window.seekTo = function(seconds) {
     audio.currentTime = seconds;
-    audio.play();
 };
 
 // New Comment Submission
