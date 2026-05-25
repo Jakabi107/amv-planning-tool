@@ -2,6 +2,13 @@
 
 A lightweight web-based tool for planning and annotating videos to music. Synchronize lyrics, add timestamped comments, and organize your creative vision all in one place.
 
+## Quickstart
+
+All features are pretty straightforeward. You can change the type of File to import, via the selector "Select Project". 
+
+Open the link: https://jakabi107.github.io/amv-planning-tool/
+
+
 ## Features
 
 - **Audio Playback**: Load and play your audio tracks
