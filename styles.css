@@ -6,8 +6,19 @@
     transition: padding 0.3s ease;
 }
 
-.tools-header:hover {
-    padding: 40px 30px;
+.header-button {
+    background: #181818;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 8px;
+    font-weight: normal;
+    cursor: pointer;
+    padding: 10px 16px;
+    height: 95%;
+}
+
+.header-button:hover {
+    background: #2a2a2a;    
 }
 
 .styled-select {
