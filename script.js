@@ -172,7 +172,9 @@ function sliceLyrics(str){
 
 // line to line element
 function parsLRCTimestamp(timestamp){
-    timestamp.slice(0)
+    let minutes = parseInt(timestamp.slice(1,3))
+    let seconds = parseFloat(timestamp.slice(4,9))
+    return minutes * 60 + seconds
 }
 
 // change audio file
