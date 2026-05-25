@@ -16,15 +16,64 @@ const LRC_TIMESTAMP_LENGTH = 10
 
 const allDataUpload = document.getElementById('all-data-upload');
 
-let audioFileDataURL;
 
+class DataManager {
+    constructor(){
+        this.audioFileDataURL = null;
+        this.comments = [];
+        this.lyrics = [];
+        this.title = "";
+    }
 
-// Sample initial comments data
-let comments = [
-];
+    changeTitle(newTitle, save=true){
+        this.title = newTitle;
+        titleElement.innerHTML = newTitle;
+        if (save) saveLastProjectToCache();
+    }
 
-let lyrics = [
-]
+    changeAudio(dataURL, save=true){ 
+        this.audioFileDataURL = dataURL;
+        audio.src = new Audio(dataURL).src;
+        if (save) saveLastProjectToCache();
+    }
+
+    changeLyrics(newLyrics, save=true){
+        this.lyrics = newLyrics;
+        renderLyrics()
+        if (save) saveLastProjectToCache();
+    }
+
+    changeComments(newComments, save=true){
+        this.comments = newComments;
+        renderComments();
+        if (save) saveLastProjectToCache();
+    }
+
+    appendComment(comment, save=true){
+        this.comments.push(comment);
+        renderComments();
+        if (save) saveLastProjectToCache();
+    }
+
+    getAllDataObject() {
+        return {
+            audio: this.audioFileDataURL,
+            lyrics: this.lyrics,
+            comments: this.comments,
+            title: this.title
+        };
+    }
+
+    setAllDataObject(data) {
+        this.changeTitle(data.title, false);
+        this.changeAudio(data.audio, false);
+        this.changeLyrics(data.lyrics, false);
+        this.changeComments(data.comments, false);
+        saveLastProjectToCache();
+    }
+}
+const dataManager = new DataManager();
+
 
 
 // --- clicking and syncing ---
@@ -69,9 +118,8 @@ commentForm.addEventListener('submit', (e) => {
     const text = commentInput.value.trim();
 
     if (text) {
-        comments.push({ time: currentAudioTime, text: text });
+        dataManager.appendComment({ time: currentAudioTime, text: text });
         commentInput.value = '';
-        renderComments();
         
         // Scroll to bottom of comments
         commentsDisplay.scrollTop = commentsDisplay.scrollHeight;
@@ -86,14 +134,9 @@ lyricsUpload.addEventListener('change', async function(event){
     if (!file) return;
     const fileContent = await readFileAsText(file);
     let newLyrics = parseLRC(fileContent)
-    changeLyrics(newLyrics)
+    dataManager.changeLyrics(newLyrics)
 })
 
-// change lyrics
-function changeLyrics(newLyrics){
-    lyrics = newLyrics;
-    renderLyrics()
-}
 
 function parseLRC(lrcContent){
     let lines = sliceLyricsFromLRC(lrcContent);
@@ -155,13 +198,8 @@ audioUpload.addEventListener('change', function(event) {
 // change audio file
 function changeAudioFile(file) {
     readFileAsDataURL(file).then((dataURL) => {
-        changeAudio(dataURL);
+        dataManager.changeAudio(dataURL);
     });
-}
-
-function changeAudio(dataURL){
-    audioFileDataURL = dataURL;
-    audio.src = new Audio(dataURL).src;
 }
 
 
@@ -171,18 +209,13 @@ function changeAudio(dataURL){
 commentUpload.addEventListener('change', async function(event) {
     const file = event.target.files[0];
     const commentsJSON = await readFileAsText(file);
-    changeComments(JSON.parse(commentsJSON));
+    dataManager.changeComments(JSON.parse(commentsJSON));
 })
 
 function downloadComments(){
     // create a "link" that contains the data 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(comments));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataManager.comments));
     downloadWithLink(dataStr, "comments.json");
-}
-
-function changeComments(newComments){
-    comments = newComments;
-    renderComments();
 }
 
 
@@ -193,18 +226,15 @@ allDataUpload.addEventListener('change', function(event) {
     loadAllFromFile(file);
 })
 
+
 function downloadAll(){
-    if (!audioFileDataURL) {
+    if (!dataManager.audioFileDataURL) {
         alert("Please upload an audio file before downloading. May be that the audiofile is not loaded yet, try again in a few seconds.");
         return;
     }
 
-    let outfile = {}
-    outfile.audio = audioFileDataURL;
-    outfile.lyrics = lyrics;
-    outfile.comments = comments;
-    outfile.title = titleElement.value;
-    downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)), "out.amvp");
+    let outfile = dataManager.getAllDataObject();
+    downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)), `${outfile.title ? outfile.title : 'Unnamed'}.amvp`);
 }
 
 
@@ -212,23 +242,41 @@ async function loadAllFromFile(file){
     const fileContent = await readFileAsText(file);
     const data = JSON.parse(fileContent);
 
-    changeTitle(data.title);
-    changeAudio(data.audio);
-    changeLyrics(data.lyrics);
-    changeComments(data.comments);
+    loadProject(data);
 }
 
+
+function loadProject(projectData){
+    dataManager.setAllDataObject(projectData);
+}
+
+
+// --- cache management ---
+
+// save last project
+async function saveLastProjectToCache() {
+    const data = dataManager.getAllDataObject();
+    await LocalDB.setItem('lastProject', data);
+}
+
+// load last project
+async function loadLastProjectFromCache() {
+    const data = await LocalDB.getItem('lastProject');
+    if (data) {
+        loadProject(data);
+    }
+}
 
 
 // --- rendering ---
 
 // Render Lyrics to the UI
 function renderLyrics() {
-    lyrics.sort((a, b) => a.time - b.time);
+    dataManager.lyrics.sort((a, b) => a.time - b.time);
 
     lyricsDisplay.innerHTML = '';
 
-    lyrics.forEach(l => {
+    dataManager.lyrics.forEach(l => {
         const div = document.createElement('div');
         div.className = 'lyric-line';
         div.setAttribute('data-time', l.time);
@@ -252,10 +300,10 @@ function renderLyrics() {
 // Render Comments to the UI
 function renderComments() {
     // Sort comments chronologically by timestamp
-    comments.sort((a, b) => a.time - b.time);
+    dataManager.comments.sort((a, b) => a.time - b.time);
     
     commentsDisplay.innerHTML = '';
-    comments.forEach(c => {
+    dataManager.comments.forEach(c => {
         const div = document.createElement('div');
         div.className = 'comment-box';
         div.innerHTML = `
@@ -269,15 +317,13 @@ function renderComments() {
 
 // --- title management ---
 titleElement.addEventListener('input', () => {
-    titleElement.value = titleElement.innerHTML.trim();
+    dataManager.changeTitle(titleElement.innerHTML.trim());
 });
 
-function changeTitle(newTitle){
-    titleElement.innerHTML = newTitle;
-    titleElement.value = newTitle;
-}
 
 
+// load last project on start
+loadLastProjectFromCache();
 // Initial render on load
 renderComments();
 renderLyrics();
