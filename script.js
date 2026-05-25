@@ -9,6 +9,9 @@ const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
 
+const LRC_TIMESTAMP_REGEX = "\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]"
+const LRC_TIMESTAMP_LENGTH = 10
+
 
 // Sample initial comments data
 let comments = [
@@ -142,15 +145,16 @@ lyricsUpload.addEventListener('change', function(event){
 
     let reader = new FileReader();
     reader.onload = () => {
-        console.log(reader.result)
+        let newLyrics = parseLRC(reader.result)
+        changeLyrics(newLyrics)
     }
     reader.readAsText(file)
 })
 
 // change lyrics
-function sliceLyrics(str){
+function sliceLyricsFromLRC(str){
     // get all timestamps
-    let matchIterator = str.matchAll("\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]")
+    let matchIterator = str.matchAll(LRC_TIMESTAMP_REGEX)
     // put them into a list
     let matches = []
     matchIterator.forEach((match)=>{
@@ -171,11 +175,35 @@ function sliceLyrics(str){
 }
 
 // line to line element
-function parsLRCTimestamp(timestamp){
+function parseLRCTimestamp(timestamp){
     let minutes = parseInt(timestamp.slice(1,3))
     let seconds = parseFloat(timestamp.slice(4,9))
     return minutes * 60 + seconds
 }
+
+function parseLRC(lrcContent){
+    let lines = sliceLyricsFromLRC(lrcContent);
+
+    let lineElements = []
+    lines.forEach(line => {
+        lineElement = {}
+
+        let timestamp = line.match(LRC_TIMESTAMP_REGEX)[0]
+        lineElement.time = parseLRCTimestamp(timestamp)
+
+        lineElement.text = line.slice(LRC_TIMESTAMP_LENGTH)
+
+        lineElements.push(lineElement)
+    })
+    return lineElements;
+}
+
+// change lyric file
+function changeLyrics(newLyrics){
+    lyrics = newLyrics;
+    renderLyrics()
+}
+
 
 // change audio file
 function changeAudioFile(file) {
