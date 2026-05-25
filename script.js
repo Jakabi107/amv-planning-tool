@@ -2,13 +2,12 @@ const audio = document.getElementById('audio-player');
 const audioUpload = document.getElementById('audio-upload');
 
 const lyricsDisplay = document.getElementById('lyric-timeline');
+const lyricsUpload = document.getElementById('lyrics-upload');
 
 
 const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
-
-
 
 
 // Sample initial comments data
@@ -19,7 +18,7 @@ let comments = [
 
 let lyrics = [
     { time: 0, text: "Intro music..." },
-    { time: 10, text: "First verse starts here..." },
+    { time: 10.9, text: "First verse starts here..." },
     { time: 30, text: "Chorus kicks in!" },
     { time: 50, text: "Second verse..." },
     { time: 70, text: "Final chorus and outro." }
@@ -76,13 +75,12 @@ function renderLyrics() {
         // Click Lyric to Skip Audio to that Timestamp
         // automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
         div.addEventListener('click', () => {
-            const targetTime = parseInt(div.getAttribute('data-time'));
+            const targetTime = parseFloat(div.getAttribute('data-time'));
             audio.currentTime = targetTime;
         });
 
         lyricsDisplay.appendChild(div);
     });
-
 }
 
 
@@ -115,7 +113,7 @@ commentForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     // Capture the exact moment the user pressed submit
-    const currentAudioTime = Math.floor(audio.currentTime); 
+    const currentAudioTime = audio.currentTime  ; 
     const text = commentInput.value.trim();
 
     if (text) {
@@ -136,6 +134,46 @@ audioUpload.addEventListener('change', function(event) {
         changeAudioFile(file);
     }
 });
+
+// new lyrics input 
+lyricsUpload.addEventListener('change', function(event){
+    const file = event.target.files[0];
+    if (!file) return;
+
+    let reader = new FileReader();
+    reader.onload = () => {
+        console.log(reader.result)
+    }
+    reader.readAsText(file)
+})
+
+// change lyrics
+function sliceLyrics(str){
+    // get all timestamps
+    let matchIterator = str.matchAll("\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]")
+    // put them into a list
+    let matches = []
+    matchIterator.forEach((match)=>{
+        matches.push(match)
+    })
+
+    // slice from one timestamp to the other
+    let lines = [];
+    matches.forEach((match, index) => {
+        let nextMatch = matches[index + 1]
+        let nextMatchPos = -1;
+        if (nextMatch) nextMatchPos = nextMatch.index
+
+        lines.push(str.slice(match.index, nextMatchPos).trim())
+    })
+    
+    return lines
+}
+
+// line to line element
+function parsLRCTimestamp(timestamp){
+    timestamp.slice(0)
+}
 
 // change audio file
 function changeAudioFile(file) {
