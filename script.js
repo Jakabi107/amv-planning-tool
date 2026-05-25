@@ -350,6 +350,13 @@ uploadSelect.addEventListener('change', function() {
 });
 
 
+// --- reset management ---
+resetButton.addEventListener('click', () => {
+    if (confirm("Are you sure you want to reset all data? This cannot be undone.")) {
+        dataManager.resetAllData();
+    }
+});
+
 // load last project on start
 loadLastProjectFromCache();
 // Initial render on load
