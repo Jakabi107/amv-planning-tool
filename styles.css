@@ -1,3 +1,38 @@
+/* Tools header bar */
+
+.tools-header {
+    text-align: right;
+    padding: 5px;
+    transition: padding 0.3s ease;
+}
+
+.tools-header:hover {
+    padding: 40px 30px;
+}
+
+.styled-select {
+    height: 95%;
+    padding: 10px 16px;
+    background: #181818;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    appearance: none;
+}
+
+/* Styled .amvp upload input */
+.styled-upload {
+    height: 95%;
+    padding: 10px 16px;
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    outline: none;
+}
 * {
     box-sizing: border-box;
     margin: 0;

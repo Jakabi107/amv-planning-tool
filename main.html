@@ -8,15 +8,20 @@
     <link rel="icon" type="image/png" href="images/icon.png">
 </head>
 <body>
-
+    <header class="tools-header">
+        <select id="project-select" class="styled-select">
+            <option value="">Select Project</option>
+        </select>
+        <input type="file" id="all-data-upload" accept=".amvp" class="styled-upload">    
+    </header>
     <header>
+
         <h2>AMV Planning Tool</h2>
         <h1 id="title" contenteditable="plaintext-only" onkeydown="preventEnter(event)" onfocus="this.style.outline='none'">Unnamed</h1>
         <audio id="audio-player" controls src=""></audio>
-        <input type="file" id="audio-upload" accept="audio/*">
-        <input type="file" id="lyrics-upload" accept=".lrc">
-        <input type="file" id="comments-upload" accept=".json">
-        <input type="file" id="all-data-upload" accept=".amvp">
+        <input type="file" id="audio-upload" accept="audio/*" style="display:none">
+        <input type="file" id="lyrics-upload" accept=".lrc" style="display:none">
+        <input type="file" id="comments-upload" accept=".json" style="display:none">
     </header>
 
     <div class="main-container">
