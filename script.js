@@ -146,7 +146,10 @@ commentForm.addEventListener('submit', (e) => {
 // --- manage uploading --- 
 dataUpload.addEventListener('change', function(event) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!confirm("Uploading will overwrite existing data. Do you want to continue?") || !file) {
+        dataUpload.value = null; // reset file input
+        return;
+    }
 
     let uploadType = uploadSelect.value;
     if (uploadType == "all") {
@@ -169,7 +172,8 @@ dataUpload.addEventListener('change', function(event) {
     if (uploadType == "audio") {
         changeAudioFile(file);
     }
-   
+
+    dataUpload.file = null; // reset file input to allow re-uploading the same file if needed
 })
 
 // --- lyrics input management ---
