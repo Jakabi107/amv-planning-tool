@@ -1,20 +1,18 @@
 const audio = document.getElementById('audio-player');
-const audioUpload = document.getElementById('audio-upload');
 const titleElement = document.getElementById('title');
 
 const lyricsDisplay = document.getElementById('lyric-timeline');
-const lyricsUpload = document.getElementById('lyrics-upload');
 
 
 const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
-const commentUpload = document.getElementById('comments-upload');
 
 const LRC_TIMESTAMP_REGEX = "\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]"
 const LRC_TIMESTAMP_LENGTH = 10
 
-const allDataUpload = document.getElementById('all-data-upload');
+const dataUpload = document.getElementById('data-upload');
+const uploadSelect = document.getElementById('upload-select');
 
 
 class DataManager {
@@ -126,17 +124,39 @@ commentForm.addEventListener('submit', (e) => {
     }
 });
 
+
+// --- manage uploading --- 
+dataUpload.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    let uploadType = uploadSelect.value;
+    if (uploadType == "all") {
+        loadAllFromFile(file);
+    } 
+    
+    if (uploadType == "comments") {
+        readFileAsText(file).then((commentsJSON) => {
+            dataManager.changeComments(JSON.parse(commentsJSON));
+        });
+    }
+    
+    if (uploadType == "lyrics") {
+        readFileAsText(file).then((lrcContent) => {
+            let newLyrics = parseLRC(lrcContent)
+            dataManager.changeLyrics(newLyrics)
+        })
+    }
+    
+    if (uploadType == "audio") {
+        changeAudioFile(file);
+    }
+   
+})
+
 // --- lyrics input management ---
 
 // new lyrics input 
-lyricsUpload.addEventListener('change', async function(event){
-    const file = event.target.files[0];
-    if (!file) return;
-    const fileContent = await readFileAsText(file);
-    let newLyrics = parseLRC(fileContent)
-    dataManager.changeLyrics(newLyrics)
-})
-
 
 function parseLRC(lrcContent){
     let lines = sliceLyricsFromLRC(lrcContent);
@@ -187,14 +207,6 @@ function parseLRCTimestamp(timestamp){
 
 // --- audio file management ---
 
-// new audio file input
-audioUpload.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        changeAudioFile(file);
-    }
-});
-
 // change audio file
 function changeAudioFile(file) {
     readFileAsDataURL(file).then((dataURL) => {
@@ -206,12 +218,6 @@ function changeAudioFile(file) {
 // --- comment file management ---
 
 // new comment file input 
-commentUpload.addEventListener('change', async function(event) {
-    const file = event.target.files[0];
-    const commentsJSON = await readFileAsText(file);
-    dataManager.changeComments(JSON.parse(commentsJSON));
-})
-
 function downloadComments(){
     // create a "link" that contains the data 
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataManager.comments));
@@ -221,12 +227,6 @@ function downloadComments(){
 
 
 // --- download all data ---
-allDataUpload.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    loadAllFromFile(file);
-})
-
-
 function downloadAll(){
     if (!dataManager.audioFileDataURL) {
         alert("Please upload an audio file before downloading. May be that the audiofile is not loaded yet, try again in a few seconds.");
@@ -319,7 +319,6 @@ function renderComments() {
 titleElement.addEventListener('input', () => {
     dataManager.changeTitle(titleElement.innerHTML.trim());
 });
-
 
 
 // load last project on start
