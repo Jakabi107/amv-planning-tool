@@ -30,10 +30,10 @@ function formatTime(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-function downloadWithLink(dataURL){
+function downloadWithLink(dataURL, filename = "output.json"){
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataURL);
-    downloadAnchorNode.setAttribute("download", "output.json");
+    downloadAnchorNode.setAttribute("download", filename);
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
