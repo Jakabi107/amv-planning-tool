@@ -13,7 +13,12 @@ const LRC_TIMESTAMP_LENGTH = 10
 
 const dataUpload = document.getElementById('data-upload');
 const uploadSelect = document.getElementById('upload-select');
-
+const UPLOADTYPE_ALLOWED_FILES = {
+    "all": [".amvp"],
+    "comments": [".json"],
+    "lyrics": [".lrc"],
+    "audio": [".mp3"]
+}
 
 class DataManager {
     constructor(){
@@ -320,6 +325,12 @@ titleElement.addEventListener('input', () => {
     dataManager.changeTitle(titleElement.innerHTML.trim());
 });
 
+
+// --- select upload type management ---
+uploadSelect.addEventListener('change', function() {
+    const uploadType = uploadSelect.value;
+    dataUpload.accept = UPLOADTYPE_ALLOWED_FILES[uploadType].join(",");
+});
 
 // load last project on start
 loadLastProjectFromCache();
