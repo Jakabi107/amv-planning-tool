@@ -1,5 +1,6 @@
 const audio = document.getElementById('audio-player');
 const audioUpload = document.getElementById('audio-upload');
+const titleElement = document.getElementById('title');
 
 const lyricsDisplay = document.getElementById('lyric-timeline');
 const lyricsUpload = document.getElementById('lyrics-upload');
@@ -262,6 +263,12 @@ function renderComments() {
         commentsDisplay.appendChild(div);
     });
 }
+
+
+// --- title management ---
+titleElement.addEventListener('input', () => {
+    titleElement.value = titleElement.innerHTML.trim();
+});
 
 
 // Initial render on load

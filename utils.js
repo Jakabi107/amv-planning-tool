@@ -1,3 +1,11 @@
+function preventEnter(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        titleElement.blur();
+    }
+}
+
+
 // Helper function to format seconds (e.g., 72 -> 1:12)
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -101,3 +109,4 @@ const LocalDB = {
         });
     }
 };
+
