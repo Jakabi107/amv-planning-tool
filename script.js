@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 const audio = document.getElementById('audio-player');
 const audioUpload = document.getElementById('audio-upload');
 
@@ -15,6 +13,8 @@ const commentUpload = document.getElementById('comments-upload');
 const LRC_TIMESTAMP_REGEX = "\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]"
 const LRC_TIMESTAMP_LENGTH = 10
 
+let audioFile;
+
 
 // Sample initial comments data
 let comments = [
@@ -28,6 +28,31 @@ function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function downloadWithLink(dataURL){
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataURL);
+    downloadAnchorNode.setAttribute("download", "output.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+function readFileAsDataURL(file){
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+    });
+}
+
+function readFileAsText(file){
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsText(file);
+    });
 }
 
 // sync lyrics with audio
@@ -127,16 +152,12 @@ commentForm.addEventListener('submit', (e) => {
 // --- lyrics input management ---
 
 // new lyrics input 
-lyricsUpload.addEventListener('change', function(event){
+lyricsUpload.addEventListener('change', async function(event){
     const file = event.target.files[0];
     if (!file) return;
-
-    let reader = new FileReader();
-    reader.onload = () => {
-        let newLyrics = parseLRC(reader.result)
-        changeLyrics(newLyrics)
-    }
-    reader.readAsText(file)
+    const fileContent = await readFileAsText(file);
+    let newLyrics = parseLRC(fileContent)
+    changeLyrics(newLyrics)
 })
 
 // change lyrics
@@ -206,6 +227,7 @@ audioUpload.addEventListener('change', function(event) {
 function changeAudioFile(file) {
     const fileURL = URL.createObjectURL(file);
     audio.src = fileURL;
+    audioFile = file;
 }
 
 
@@ -224,21 +246,29 @@ commentUpload.addEventListener('change', function(event) {
 function downloadComments(){
     // create a "link" that contains the data 
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(comments));
-    // creates a link element
-    const downloadAnchorNode = document.createElement('a');
-    // sets the "link" to contain the data
-    downloadAnchorNode.setAttribute("href", dataStr);
-    // says dont visit but download the data as a file called "comments.json"
-    downloadAnchorNode.setAttribute("download", "comments.json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    downloadWithLink(dataStr);
 }
 
 function changeComments(newComments){
     comments = newComments;
     renderComments();
 }
+
+
+async function downloadAll(){
+    if (!audioFile) {
+        alert("Please upload an audio file before downloading.");
+        return;
+    }
+
+    let outfile = {}
+    outfile.audio = await readFileAsDataURL(audioFile);
+    outfile.lyrics = lyrics;
+    outfile.comments = comments;
+    downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)));
+}
+
+
 
 // Initial render on load
 renderComments();
