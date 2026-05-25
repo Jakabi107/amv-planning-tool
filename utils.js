@@ -33,67 +33,71 @@ function readFileAsText(file){
 
 const LocalDB = {
   dbName: "CachedDataDB",
+  // our object store
   storeName: "keyValueStore",
   version: 1,
   db: null,
 
-  // Internal helper to open the database
-  _getDB() {
-    return new Promise((resolve, reject) => {
-        if (this.db) {
-            return resolve(this.db);
-}
-      const request = indexedDB.open(this.dbName, this.version);
+    // Internal helper to open the database
+    _getDB() {
+        return new Promise((resolve, reject) => {
+            // If we  already have a connection, reuse it
+            if (this.db) return resolve(this.db);
 
-      // Setup the database structure if it doesn't exist yet
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains(this.storeName)) {
-          db.createObjectStore(this.storeName);
-        }
-      };
+            const request = indexedDB.open(this.dbName, this.version);
 
-      request.onsuccess = (event) => resolve(event.target.result);
-      request.onerror = (event) => reject(event.target.error);
-    });
-  },
+            // Setup the database structure if it doesn't exist yet
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(this.storeName)) {
+                db.createObjectStore(this.storeName);
+                }
+            };
 
-  // Save data (Like localStorage.setItem)
-  async setItem(key, value) {
-    const db = await this._getDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, "readwrite");
-      const store = transaction.objectStore(this.storeName);
-      const request = store.put(value, key);
+            request.onsuccess = (event) => resolve(event.target.result);
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
 
-      request.onsuccess = () => resolve();
-      request.onerror = (event) => reject(event.target.error);
-    });
-  },
+    // Save data (Like localStorage.setItem)
+    async setItem(key, value) {
+        const db = await this._getDB();
+        return new Promise((resolve, reject) => {
+            // create a transaction and specify the object store needed
+            const transaction = db.transaction(this.storeName, "readwrite");
+            // get the object store
+            const store = transaction.objectStore(this.storeName);
+            // make the change
+            const request = store.put(value, key);
 
-  // Retrieve data (Like localStorage.getItem)
-  async getItem(key) {
-    const db = await this._getDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, "readonly");
-      const store = transaction.objectStore(this.storeName);
-      const request = store.get(key);
+            request.onsuccess = () => resolve();
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
 
-      request.onsuccess = (event) => resolve(event.target.result);
-      request.onerror = (event) => reject(event.target.error);
-    });
-  },
+    // Retrieve data (Like localStorage.getItem)
+    async getItem(key) {
+            const db = await this._getDB();
+            return new Promise((resolve, reject) => {
+            const transaction = db.transaction(this.storeName, "readonly");
+            const store = transaction.objectStore(this.storeName);
+            const request = store.get(key);
 
-  // Delete data (Like localStorage.removeItem)
-  async removeItem(key) {
-    const db = await this._getDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, "readwrite");
-      const store = transaction.objectStore(this.storeName);
-      const request = store.delete(key);
+            request.onsuccess = (event) => resolve(event.target.result);
+            request.onerror = (event) => reject(event.target.error);
+            });
+    },
 
-      request.onsuccess = () => resolve();
-      request.onerror = (event) => reject(event.target.error);
-    });
-  }
+    // Delete data (Like localStorage.removeItem)
+    async removeItem(key) {
+        const db = await this._getDB();
+        return new Promise((resolve, reject) => {
+        const transaction = db.transaction(this.storeName, "readwrite");
+        const store = transaction.objectStore(this.storeName);
+        const request = store.delete(key);
+
+        request.onsuccess = () => resolve();
+        request.onerror = (event) => reject(event.target.error);
+        });
+    }
 };
