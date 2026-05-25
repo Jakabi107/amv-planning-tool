@@ -13,6 +13,8 @@ const commentUpload = document.getElementById('comments-upload');
 const LRC_TIMESTAMP_REGEX = "\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]"
 const LRC_TIMESTAMP_LENGTH = 10
 
+const allDataUpload = document.getElementById('all-data-upload');
+
 let audioFile;
 
 
@@ -253,6 +255,10 @@ function changeComments(newComments){
 
 
 // --- download all data ---
+allDataUpload.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    loadAllFromFile(file);
+})
 
 async function downloadAll(){
     if (!audioFile) {
@@ -267,6 +273,17 @@ async function downloadAll(){
     downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)));
 }
 
+
+async function loadAllFromFile(file){
+    const fileContent = await readFileAsText(file);
+    const data = JSON.parse(fileContent);
+
+    audio.src = new Audio(data.audio).src;
+    changeLyrics(data.lyrics);
+    changeComments(data.comments);
+}
+
+// TODO fix that on second time it also saves the audio
 
 
 // Initial render on load
