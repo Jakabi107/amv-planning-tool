@@ -25,38 +25,8 @@ let comments = [
 let lyrics = [
 ]
 
-// Helper function to format seconds (e.g., 72 -> 1:12)
-function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-}
 
-function downloadWithLink(dataURL, filename = "output.json"){
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataURL);
-    downloadAnchorNode.setAttribute("download", filename);
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-}
-
-function readFileAsDataURL(file){
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-    });
-}
-
-function readFileAsText(file){
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsText(file);
-    });
-}
-
+// --- clicking and syncing ---
 // sync lyrics with audio
 // only works if in order
 audio.addEventListener('timeupdate', () => {
@@ -82,50 +52,6 @@ audio.addEventListener('timeupdate', () => {
     });
 });
 
-
-// Render Lyrics to the UI
-function renderLyrics() {
-    lyrics.sort((a, b) => a.time - b.time);
-
-    lyricsDisplay.innerHTML = '';
-
-    lyrics.forEach(l => {
-        const div = document.createElement('div');
-        div.className = 'lyric-line';
-        div.setAttribute('data-time', l.time);
-        div.innerHTML = `
-            <span>${l.text}</span>
-            <span class="timestamp">${formatTime(l.time)}</span>
-        `;
-
-        // Click Lyric to Skip Audio to that Timestamp
-        // automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
-        div.addEventListener('click', () => {
-            const targetTime = parseFloat(div.getAttribute('data-time'));
-            audio.currentTime = targetTime;
-        });
-
-        lyricsDisplay.appendChild(div);
-    });
-}
-
-
-// Render Comments to the UI
-function renderComments() {
-    // Sort comments chronologically by timestamp
-    comments.sort((a, b) => a.time - b.time);
-    
-    commentsDisplay.innerHTML = '';
-    comments.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'comment-box';
-        div.innerHTML = `
-            <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
-            <p>${c.text}</p>
-        `;
-        commentsDisplay.appendChild(div);
-    });
-}
 
 // Click Timestamp in Comment to Skip Audio
 // Expose as global for inline onclick handlers
@@ -259,6 +185,7 @@ function changeComments(newComments){
 }
 
 
+
 // --- download all data ---
 allDataUpload.addEventListener('change', function(event) {
     const file = event.target.files[0];
@@ -275,7 +202,7 @@ function downloadAll(){
     outfile.audio = audioFileDataURL;
     outfile.lyrics = lyrics;
     outfile.comments = comments;
-    downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)));
+    downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)), "out.amvp");
 }
 
 
@@ -289,7 +216,52 @@ async function loadAllFromFile(file){
 }
 
 
-// TODO fix that on second time it also saves the audio
+
+// --- rendering ---
+
+// Render Lyrics to the UI
+function renderLyrics() {
+    lyrics.sort((a, b) => a.time - b.time);
+
+    lyricsDisplay.innerHTML = '';
+
+    lyrics.forEach(l => {
+        const div = document.createElement('div');
+        div.className = 'lyric-line';
+        div.setAttribute('data-time', l.time);
+        div.innerHTML = `
+            <span>${l.text}</span>
+            <span class="timestamp">${formatTime(l.time)}</span>
+        `;
+
+        // Click Lyric to Skip Audio to that Timestamp
+        // automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
+        div.addEventListener('click', () => {
+            const targetTime = parseFloat(div.getAttribute('data-time'));
+            audio.currentTime = targetTime;
+        });
+
+        lyricsDisplay.appendChild(div);
+    });
+}
+
+
+// Render Comments to the UI
+function renderComments() {
+    // Sort comments chronologically by timestamp
+    comments.sort((a, b) => a.time - b.time);
+    
+    commentsDisplay.innerHTML = '';
+    comments.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment-box';
+        div.innerHTML = `
+            <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
+            <p>${c.text}</p>
+        `;
+        commentsDisplay.appendChild(div);
+    });
+}
 
 
 // Initial render on load
