@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Lyric & Comment Timeline</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h2>Song Player & Annotator</h2>
+        <audio id="audio-player" controls src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+    </header>
+
+    <div class="main-container">
+        <div class="lyric-timeline" id="lyric-timeline">
+            <div class="lyric-line" data-time="0">
+                <span>🎵 (Intro Instrumental)</span>
+                <span class="timestamp">0:00</span>
+            </div>
+            <div class="lyric-line" data-time="12">
+                <span>This is the first line of the song...</span>
+                <span class="timestamp">0:12</span>
+            </div>
+            <div class="lyric-line" data-time="24">
+                <span>Moving into the second verse here...</span>
+                <span class="timestamp">0:24</span>
+            </div>
+            <div class="lyric-line" data-time="40">
+                <span>And this is where the chorus kicks in!</span>
+                <span class="timestamp">0:40</span>
+            </div>
+        </div>
+
+        <div class="comment-section">
+            <div class="comments-display" id="comments-display">
+                </div>
+            
+            <form class="comment-form" id="comment-form">
+                <input type="text" id="comment-input" placeholder="Add a comment at the current timestamp..." required>
+                <button type="submit">Comment</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
