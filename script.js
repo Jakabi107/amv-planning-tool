@@ -15,7 +15,7 @@ const LRC_TIMESTAMP_LENGTH = 10
 
 const allDataUpload = document.getElementById('all-data-upload');
 
-let audioFile;
+let audioFileDataURL;
 
 
 // Sample initial comments data
@@ -227,9 +227,14 @@ audioUpload.addEventListener('change', function(event) {
 
 // change audio file
 function changeAudioFile(file) {
-    const fileURL = URL.createObjectURL(file);
-    audio.src = fileURL;
-    audioFile = file;
+    readFileAsDataURL(file).then((dataURL) => {
+        changeAudio(dataURL);
+    });
+}
+
+function changeAudio(dataURL){
+    audioFileDataURL = dataURL;
+    audio.src = new Audio(dataURL).src;
 }
 
 
@@ -260,14 +265,14 @@ allDataUpload.addEventListener('change', function(event) {
     loadAllFromFile(file);
 })
 
-async function downloadAll(){
-    if (!audioFile) {
-        alert("Please upload an audio file before downloading.");
+function downloadAll(){
+    if (!audioFileDataURL) {
+        alert("Please upload an audio file before downloading. May be that the audiofile is not loaded yet, try again in a few seconds.");
         return;
     }
 
     let outfile = {}
-    outfile.audio = await readFileAsDataURL(audioFile);
+    outfile.audio = audioFileDataURL;
     outfile.lyrics = lyrics;
     outfile.comments = comments;
     downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)));
@@ -278,10 +283,11 @@ async function loadAllFromFile(file){
     const fileContent = await readFileAsText(file);
     const data = JSON.parse(fileContent);
 
-    audio.src = new Audio(data.audio).src;
+    changeAudio(data.audio);
     changeLyrics(data.lyrics);
     changeComments(data.comments);
 }
+
 
 // TODO fix that on second time it also saves the audio
 
@@ -289,4 +295,3 @@ async function loadAllFromFile(file){
 // Initial render on load
 renderComments();
 renderLyrics();
-
