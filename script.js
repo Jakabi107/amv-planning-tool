@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 const audio = document.getElementById('audio-player');
 const audioUpload = document.getElementById('audio-upload');
 
@@ -16,16 +18,9 @@ const LRC_TIMESTAMP_LENGTH = 10
 
 // Sample initial comments data
 let comments = [
-    { time: 12, text: "I love the bassline that starts right here!" },
-    { time: 40, text: "Best chorus of the entire album hands down." }
 ];
 
 let lyrics = [
-    { time: 0, text: "Intro music..." },
-    { time: 10.9, text: "First verse starts here..." },
-    { time: 30, text: "Chorus kicks in!" },
-    { time: 50, text: "Second verse..." },
-    { time: 70, text: "Final chorus and outro." }
 ]
 
 // Helper function to format seconds (e.g., 72 -> 1:12)
@@ -248,3 +243,7 @@ function changeComments(newComments){
 // Initial render on load
 renderComments();
 renderLyrics();
+
+
+
+fs.
