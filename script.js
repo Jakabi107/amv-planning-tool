@@ -8,6 +8,7 @@ const lyricsUpload = document.getElementById('lyrics-upload');
 const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
+const commentUpload = document.getElementById('comments-upload');
 
 const LRC_TIMESTAMP_REGEX = "\\[[0-9][0-9]:[0-9][0-9].[0-9][0-9]\]"
 const LRC_TIMESTAMP_LENGTH = 10
@@ -210,6 +211,38 @@ audioUpload.addEventListener('change', function(event) {
 function changeAudioFile(file) {
     const fileURL = URL.createObjectURL(file);
     audio.src = fileURL;
+}
+
+
+// --- comment file management ---
+
+// new comment file input 
+commentUpload.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    let fr = new FileReader();
+    fr.onload = () => {changeComments(
+        JSON.parse(fr.result)
+    )}
+    fr.readAsText(file)
+})
+
+function downloadComments(){
+    // create a "link" that contains the data 
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(comments));
+    // creates a link element
+    const downloadAnchorNode = document.createElement('a');
+    // sets the "link" to contain the data
+    downloadAnchorNode.setAttribute("href", dataStr);
+    // says dont visit but download the data as a file called "comments.json"
+    downloadAnchorNode.setAttribute("download", "comments.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+function changeComments(newComments){
+    comments = newComments;
+    renderComments();
 }
 
 // Initial render on load
