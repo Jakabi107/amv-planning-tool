@@ -129,14 +129,7 @@ commentForm.addEventListener('submit', (e) => {
     }
 });
 
-
-// new file input
-audioUpload.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        changeAudioFile(file);
-    }
-});
+// --- lyrics input management ---
 
 // new lyrics input 
 lyricsUpload.addEventListener('change', function(event){
@@ -152,6 +145,28 @@ lyricsUpload.addEventListener('change', function(event){
 })
 
 // change lyrics
+function changeLyrics(newLyrics){
+    lyrics = newLyrics;
+    renderLyrics()
+}
+
+function parseLRC(lrcContent){
+    let lines = sliceLyricsFromLRC(lrcContent);
+
+    let lineElements = []
+    lines.forEach(line => {
+        lineElement = {}
+        // parse time
+        let timestamp = line.match(LRC_TIMESTAMP_REGEX)[0]
+        lineElement.time = parseLRCTimestamp(timestamp)
+        // remove timestamp from text
+        lineElement.text = line.slice(LRC_TIMESTAMP_LENGTH)
+
+        lineElements.push(lineElement)
+    })
+    return lineElements;
+}
+
 function sliceLyricsFromLRC(str){
     // get all timestamps
     let matchIterator = str.matchAll(LRC_TIMESTAMP_REGEX)
@@ -174,36 +189,23 @@ function sliceLyricsFromLRC(str){
     return lines
 }
 
-// line to line element
 function parseLRCTimestamp(timestamp){
     let minutes = parseInt(timestamp.slice(1,3))
     let seconds = parseFloat(timestamp.slice(4,9))
     return minutes * 60 + seconds
 }
 
-function parseLRC(lrcContent){
-    let lines = sliceLyricsFromLRC(lrcContent);
 
-    let lineElements = []
-    lines.forEach(line => {
-        lineElement = {}
 
-        let timestamp = line.match(LRC_TIMESTAMP_REGEX)[0]
-        lineElement.time = parseLRCTimestamp(timestamp)
+// --- audio file management ---
 
-        lineElement.text = line.slice(LRC_TIMESTAMP_LENGTH)
-
-        lineElements.push(lineElement)
-    })
-    return lineElements;
-}
-
-// change lyric file
-function changeLyrics(newLyrics){
-    lyrics = newLyrics;
-    renderLyrics()
-}
-
+// new audio file input
+audioUpload.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        changeAudioFile(file);
+    }
+});
 
 // change audio file
 function changeAudioFile(file) {
