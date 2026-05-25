@@ -3,13 +3,23 @@ const lyricLines = document.querySelectorAll('.lyric-line');
 const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
+const lyricsDisplay = document.getElementById('lyric-timeline');
 const audioUpload = document.getElementById('audio-upload');
+
 
 // Sample initial comments data
 let comments = [
     { time: 12, text: "I love the bassline that starts right here!" },
     { time: 40, text: "Best chorus of the entire album hands down." }
 ];
+
+let lyrics = [
+    { time: 0, text: "Intro music..." },
+    { time: 10, text: "First verse starts here..." },
+    { time: 30, text: "Chorus kicks in!" },
+    { time: 50, text: "Second verse..." },
+    { time: 70, text: "Final chorus and outro." }
+]
 
 // Helper function to format seconds (e.g., 72 -> 1:12)
 function formatTime(seconds) {
@@ -51,6 +61,24 @@ lyricLines.forEach(line => {
         // audio.play();
     });
 });
+
+// Render Lyrics to the UI
+function renderLyrics() {
+    lyrics.sort((a, b) => a.time - b.time);
+
+    lyricsDisplay.innerHTML = '';
+    lyrics.forEach(l => {
+        const div = document.createElement('div');
+        div.className = 'lyric-line';
+        div.setAttribute('data-time', l.time);
+        div.innerHTML = `
+            <span>${l.text}</span>
+            <span class="timestamp">${formatTime(l.time)}</span>
+        `;
+
+        lyricsDisplay.appendChild(div);
+    });
+}
 
 // Render Comments to the UI
 function renderComments() {
@@ -111,3 +139,4 @@ function changeAudioFile(file) {
 
 // Initial render on load
 renderComments();
+renderLyrics();
