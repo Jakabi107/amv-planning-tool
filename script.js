@@ -3,6 +3,7 @@ const lyricLines = document.querySelectorAll('.lyric-line');
 const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
+const audioUpload = document.getElementById('audio-upload');
 
 // Sample initial comments data
 let comments = [
@@ -42,6 +43,7 @@ audio.addEventListener('timeupdate', () => {
 
 
 // Click Lyric to Skip Audio to that Timestamp
+// automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
 lyricLines.forEach(line => {
     line.addEventListener('click', () => {
         const targetTime = parseInt(line.getAttribute('data-time'));
@@ -50,7 +52,7 @@ lyricLines.forEach(line => {
     });
 });
 
-// 3. Render Comments to the UI
+// Render Comments to the UI
 function renderComments() {
     // Sort comments chronologically by timestamp
     comments.sort((a, b) => a.time - b.time);
@@ -67,14 +69,14 @@ function renderComments() {
     });
 }
 
-// 4. Click Timestamp in Comment to Skip Audio
+// Click Timestamp in Comment to Skip Audio
 // Expose as global for inline onclick handlers
 window.seekTo = function(seconds) {
     audio.currentTime = seconds;
     audio.play();
 };
 
-// 5. Handle New Comment Submission
+// New Comment Submission
 commentForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -91,6 +93,21 @@ commentForm.addEventListener('submit', (e) => {
         commentsDisplay.scrollTop = commentsDisplay.scrollHeight;
     }
 });
+
+
+// new file input
+audioUpload.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        changeAudioFile(file);
+    }
+});
+
+// change audio file
+function changeAudioFile(file) {
+    const fileURL = URL.createObjectURL(file);
+    audio.src = fileURL;
+}
 
 // Initial render on load
 renderComments();
