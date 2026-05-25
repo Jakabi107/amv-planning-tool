@@ -234,13 +234,10 @@ function changeAudioFile(file) {
 // --- comment file management ---
 
 // new comment file input 
-commentUpload.addEventListener('change', function(event) {
+commentUpload.addEventListener('change', async function(event) {
     const file = event.target.files[0];
-    let fr = new FileReader();
-    fr.onload = () => {changeComments(
-        JSON.parse(fr.result)
-    )}
-    fr.readAsText(file)
+    const commentsJSON = await readFileAsText(file);
+    changeComments(JSON.parse(commentsJSON));
 })
 
 function downloadComments(){
