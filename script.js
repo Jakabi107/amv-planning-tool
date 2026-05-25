@@ -32,9 +32,9 @@ class DataManager {
         this.title = "";
     }
 
-    changeTitle(newTitle, save=true){
+    changeTitle(newTitle, save=true, set=true){
         this.title = newTitle;
-        titleElement.innerHTML = newTitle;
+        if (set) titleElement.innerHTML = newTitle;
         if (save) saveLastProjectToCache();
     }
 
@@ -77,6 +77,15 @@ class DataManager {
         this.changeLyrics(data.lyrics, false);
         this.changeComments(data.comments, false);
         saveLastProjectToCache();
+    }
+
+    resetAllData(){
+        this.setAllDataObject({
+            audio: "",
+            lyrics: [],
+            comments: [],
+            title: "unnamed"
+        });
     }
 }
 const dataManager = new DataManager();
@@ -330,7 +339,7 @@ function renderComments() {
 
 // --- title management ---
 titleElement.addEventListener('input', () => {
-    dataManager.changeTitle(titleElement.innerHTML.trim());
+    dataManager.changeTitle(titleElement.innerHTML.trim(), true, false);
 });
 
 
