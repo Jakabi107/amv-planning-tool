@@ -203,6 +203,7 @@ function downloadAll(){
     outfile.audio = audioFileDataURL;
     outfile.lyrics = lyrics;
     outfile.comments = comments;
+    outfile.title = titleElement.value;
     downloadWithLink("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(outfile)), "out.amvp");
 }
 
@@ -211,6 +212,7 @@ async function loadAllFromFile(file){
     const fileContent = await readFileAsText(file);
     const data = JSON.parse(fileContent);
 
+    changeTitle(data.title);
     changeAudio(data.audio);
     changeLyrics(data.lyrics);
     changeComments(data.comments);
@@ -269,6 +271,11 @@ function renderComments() {
 titleElement.addEventListener('input', () => {
     titleElement.value = titleElement.innerHTML.trim();
 });
+
+function changeTitle(newTitle){
+    titleElement.innerHTML = newTitle;
+    titleElement.value = newTitle;
+}
 
 
 // Initial render on load
