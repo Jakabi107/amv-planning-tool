@@ -43,3 +43,13 @@ TODO add link to webpage
 All your work is automatically saved to your browser's local storage!
 
 But regularly save it to your machine. Just to be sure no Frontend magic messes you up :)
+
+
+
+
+
+
+## Credits & Licenses
+
+This project uses the following open-source assets:
+* [Material Symbols (Delete Icon)](https://fonts.google.com/icons) by Google, licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
