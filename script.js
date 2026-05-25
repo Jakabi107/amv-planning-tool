@@ -244,6 +244,3 @@ function changeComments(newComments){
 renderComments();
 renderLyrics();
 
-
-
-fs.
