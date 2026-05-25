@@ -243,7 +243,7 @@ commentUpload.addEventListener('change', async function(event) {
 function downloadComments(){
     // create a "link" that contains the data 
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(comments));
-    downloadWithLink(dataStr);
+    downloadWithLink(dataStr, "comments.json");
 }
 
 function changeComments(newComments){
@@ -251,6 +251,8 @@ function changeComments(newComments){
     renderComments();
 }
 
+
+// --- download all data ---
 
 async function downloadAll(){
     if (!audioFile) {
