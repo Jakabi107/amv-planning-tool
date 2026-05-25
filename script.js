@@ -20,6 +20,10 @@ const UPLOADTYPE_ALLOWED_FILES = {
     "audio": [".mp3"]
 }
 
+const downloadButton = document.getElementById('download-button');
+const resetButton = document.getElementById('reset-button');
+
+
 class DataManager {
     constructor(){
         this.audioFileDataURL = null;
@@ -256,6 +260,10 @@ function loadProject(projectData){
 }
 
 
+downloadButton.addEventListener('click', downloadAll);
+
+
+
 // --- cache management ---
 
 // save last project
@@ -331,6 +339,7 @@ uploadSelect.addEventListener('change', function() {
     const uploadType = uploadSelect.value;
     dataUpload.accept = UPLOADTYPE_ALLOWED_FILES[uploadType].join(",");
 });
+
 
 // load last project on start
 loadLastProjectFromCache();
