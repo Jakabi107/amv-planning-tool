@@ -38,7 +38,10 @@ The tool supports importing data in multiple formats via the upload interface:
 
 ## Getting Started
 
-TODO add link to webpage
+Clone the repo and open index.html in your browser.
+
+Or just visit the webpage with the deployed gh page:
+https://jakabi107.github.io/amv-planning-tool/
 
 All your work is automatically saved to your browser's local storage!
 
