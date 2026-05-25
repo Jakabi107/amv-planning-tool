@@ -1,10 +1,14 @@
 const audio = document.getElementById('audio-player');
-const lyricLines = document.querySelectorAll('.lyric-line');
+const audioUpload = document.getElementById('audio-upload');
+
+const lyricsDisplay = document.getElementById('lyric-timeline');
+
+
 const commentForm = document.getElementById('comment-form');
 const commentInput = document.getElementById('comment-input');
 const commentsDisplay = document.getElementById('comments-display');
-const lyricsDisplay = document.getElementById('lyric-timeline');
-const audioUpload = document.getElementById('audio-upload');
+
+
 
 
 // Sample initial comments data
@@ -33,11 +37,13 @@ function formatTime(seconds) {
 audio.addEventListener('timeupdate', () => {
     const currentTime = audio.currentTime;
     
-    lyricLines.forEach((line, index) => {
+    let lyricLineElements = document.querySelectorAll('.lyric-line');
+
+    lyricLineElements.forEach((line, index) => {
         const lineTime = parseInt(line.getAttribute('data-time'));
 
-        const nextLineTime = lyricLines[index + 1] 
-            ? parseInt(lyricLines[index + 1].getAttribute('data-time')) 
+        const nextLineTime = lyricLineElements[index + 1] 
+            ? parseInt(lyricLineElements[index + 1].getAttribute('data-time')) 
             : Infinity;
 
         if (currentTime >= lineTime && currentTime < nextLineTime) {
@@ -52,21 +58,12 @@ audio.addEventListener('timeupdate', () => {
 });
 
 
-// Click Lyric to Skip Audio to that Timestamp
-// automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
-lyricLines.forEach(line => {
-    line.addEventListener('click', () => {
-        const targetTime = parseInt(line.getAttribute('data-time'));
-        audio.currentTime = targetTime;
-        // audio.play();
-    });
-});
-
 // Render Lyrics to the UI
 function renderLyrics() {
     lyrics.sort((a, b) => a.time - b.time);
 
     lyricsDisplay.innerHTML = '';
+
     lyrics.forEach(l => {
         const div = document.createElement('div');
         div.className = 'lyric-line';
@@ -76,9 +73,18 @@ function renderLyrics() {
             <span class="timestamp">${formatTime(l.time)}</span>
         `;
 
+        // Click Lyric to Skip Audio to that Timestamp
+        // automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
+        div.addEventListener('click', () => {
+            const targetTime = parseInt(div.getAttribute('data-time'));
+            audio.currentTime = targetTime;
+        });
+
         lyricsDisplay.appendChild(div);
     });
+
 }
+
 
 // Render Comments to the UI
 function renderComments() {
