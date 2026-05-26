@@ -125,6 +125,38 @@ audio.addEventListener('timeupdate', () => {
 });
 
 
+function skipToNextLyric(){
+    const currentTime = audio.currentTime;
+    let activeLyric = document.querySelector('.lyric-line.active');
+    if (activeLyric) {
+        let nextLyric = activeLyric.nextElementSibling;
+        if (nextLyric) nextLyric.click();
+    }
+}
+
+
+function skipToPreviousLyric(){
+    const currentTime = audio.currentTime;
+    let activeLyric = document.querySelector('.lyric-line.active');
+    if (activeLyric) {
+        let prevLyric = activeLyric.previousElementSibling;
+        if (prevLyric) prevLyric.click();
+    }
+}
+
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        skipToNextLyric();
+    } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        skipToPreviousLyric();
+    }
+});
+    
+
+
 // Click Timestamp in Comment to Skip Audio
 // Expose as global for inline onclick handlers
 window.seekTo = function(seconds) {
