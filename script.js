@@ -151,7 +151,7 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
     // ctrl shortcuts - should overwrite non ctrl shortcuts if they are the same keys
     if ((e.ctrlKey || e.metaKey)) {
-        if (e.key === "ArrowDown"){
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
             e.preventDefault();
             moveCommentsToTimestamp(audio.currentTime);
         } 
