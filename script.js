@@ -162,6 +162,24 @@ document.addEventListener('keydown', (e) => {
 });
     
 
+// moves to comment closest after the timestamp 
+function moveCommentsToTimestamp(seconds){
+    let nearestComment = null;
+    let smallestDiff = Infinity;
+    document.getElementById('comment-section').querySelectorAll('.comment-box').forEach(comment => {
+        const commentTime = parseFloat(comment.getAttribute('data-time'));
+        const diff = commentTime - seconds;
+        if (diff < smallestDiff && diff >= 0) {
+            smallestDiff = diff;
+            nearestComment = comment;
+        }
+    });
+    if (nearestComment) {
+        nearestComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    return nearestComment;
+}
+
 
 // Click Timestamp in Comment to Skip Audio
 // Expose as global for inline onclick handlers
@@ -370,6 +388,7 @@ function renderLyrics() {
         div.addEventListener('click', () => {
             const targetTime = parseFloat(div.getAttribute('data-time'));
             audio.currentTime = targetTime;
+
         });
 
         lyricsDisplay.appendChild(div);
@@ -387,6 +406,7 @@ function renderComments() {
 
         const div = document.createElement('div');
         div.className = 'comment-box';
+        div.setAttribute('data-time', c.time);
         div.innerHTML = `
             <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
             <p class="comment-text-inline">${formatComment(c.text)}</p>
