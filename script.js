@@ -375,7 +375,7 @@ function formatComment(commentText){
     // First escape HTML to prevent XSS, then replace URLs with anchor tags
     commentText = escapeHTML(commentText);
 
-    return commentText.replaceAll(HTTP_URL_REGEX, '<a href="$&" target="_blank">$&</a>');
+    return commentText.replaceAll(HTTP_URL_REGEX, '<a href="$&" class="comment-link" target="_blank">$&</a>');
 }
 
 

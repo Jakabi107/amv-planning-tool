@@ -176,6 +176,11 @@ audio {
     gap: 10px;
 }
 
+.comment-link {
+    color: #1db954;
+    text-decoration: none;
+}
+
 input[type="text"] {
     flex: 1;
     padding: 12px;
