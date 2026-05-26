@@ -144,11 +144,6 @@ function skipToPreviousLyric(){
 
 
 document.addEventListener('keydown', (e) => {
-    
-});
-
-
-document.addEventListener('keydown', (e) => {
     // ctrl shortcuts - should overwrite non ctrl shortcuts if they are the same keys
     if ((e.ctrlKey || e.metaKey)) {
         if (e.key === "ArrowDown" || e.key === "ArrowUp") {
@@ -213,8 +208,7 @@ commentForm.addEventListener('submit', (e) => {
         dataManager.appendComment({ time: currentAudioTime, text: text });
         commentInput.value = '';
         
-        // Scroll to bottom of comments
-        commentsDisplay.scrollTop = commentsDisplay.scrollHeight;
+        moveCommentsToTimestamp(currentAudioTime);
     }
 });
 
