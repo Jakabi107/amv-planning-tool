@@ -4,7 +4,7 @@ A lightweight web-based tool for planning and annotating videos to music. Synchr
 
 ## Quickstart
 
-All features are pretty straightforeward. You can change the type of File to import, via the selector "Select Project". 
+All features are pretty straightforeward. You can change the type of File to import, via the selector "Upload Project". 
 
 Open the link: https://jakabi107.github.io/amv-planning-tool/
 

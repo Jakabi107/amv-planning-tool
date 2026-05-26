@@ -52,7 +52,6 @@
     border-radius: 8px;
     font-size: 1em;
     outline: none;
-    appearance: none;
 }
 
 /* Styled .amvp upload input */
@@ -188,6 +187,7 @@ input[type="text"] {
     border: 1px solid #444;
     background: #2a2a2a;
     color: white;
+    outline: none;
 }
 
 button {
