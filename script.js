@@ -34,7 +34,7 @@ class DataManager {
 
     changeTitle(newTitle, save=true, set=true){
         this.title = newTitle;
-        if (set) titleElement.innerHTML = newTitle;
+        if (set) titleElement.textContent = newTitle;
         if (save) saveLastProjectToCache();
     }
 
@@ -321,9 +321,11 @@ function renderLyrics() {
         div.className = 'lyric-line';
         div.setAttribute('data-time', l.time);
         div.innerHTML = `
-            <span>${l.text}</span>
+            <span class="lyric-text"></span>
             <span class="timestamp">${formatTime(l.time)}</span>
         `;
+
+        div.querySelector('.lyric-text').textContent = l.text; // set lyric text with textContent to prevent XSS
 
         // Click Lyric to Skip Audio to that Timestamp
         // automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
@@ -368,6 +370,9 @@ function renderComments() {
         commentsDisplay.appendChild(div);
     });
 }
+
+
+
 
 
 // --- title management ---
