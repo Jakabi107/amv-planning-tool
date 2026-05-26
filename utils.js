@@ -1,3 +1,14 @@
+// workaround
+function escapeHTML(str) {
+    // Create a dummy element in memory (not attached to the page)
+    const div = document.createElement('div');
+    // Set the user input as plain text
+    div.textContent = str;
+    // Retrieve the automatically escaped HTML string
+    return div.innerHTML;
+}
+
+
 function preventEnter(event) {
     if (event.key === "Enter") {
         event.preventDefault();
