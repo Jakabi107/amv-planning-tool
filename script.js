@@ -144,21 +144,35 @@ function skipToPreviousLyric(){
 
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === "ArrowDown") {
-        e.preventDefault();
-        skipToNextLyric();
-    } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        skipToPreviousLyric();
-    }
+    
 });
 
 
 document.addEventListener('keydown', (e) => {
-    if (e.key == " " && !document.activeElement.classList.contains('needs-space-key')) {
+    // ctrl shortcuts - should overwrite non ctrl shortcuts if they are the same keys
+    if ((e.ctrlKey || e.metaKey)) {
+        if (e.key === "ArrowDown"){
+            e.preventDefault();
+            moveCommentsToTimestamp(audio.currentTime);
+        } 
+        if (e.key == "Enter") {
+            e.preventDefault();
+            audio.paused ? audio.play() : audio.pause();
+        }
+    //non ctrl keys shortcuts
+    } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        skipToNextLyric();
+
+    } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        skipToPreviousLyric();
+
+    } else if ((e.key == " " || e.key == "Enter") && !document.activeElement.classList.contains('needs-typing')) { 
         e.preventDefault();
         audio.paused ? audio.play() : audio.pause();
     }
+
 });
     
 
