@@ -126,7 +126,6 @@ audio.addEventListener('timeupdate', () => {
 
 
 function skipToNextLyric(){
-    const currentTime = audio.currentTime;
     let activeLyric = document.querySelector('.lyric-line.active');
     if (activeLyric) {
         let nextLyric = activeLyric.nextElementSibling;
@@ -136,7 +135,6 @@ function skipToNextLyric(){
 
 
 function skipToPreviousLyric(){
-    const currentTime = audio.currentTime;
     let activeLyric = document.querySelector('.lyric-line.active');
     if (activeLyric) {
         let prevLyric = activeLyric.previousElementSibling;
@@ -152,6 +150,14 @@ document.addEventListener('keydown', (e) => {
     } else if (e.key === "ArrowUp") {
         e.preventDefault();
         skipToPreviousLyric();
+    }
+});
+
+
+document.addEventListener('keydown', (e) => {
+    if (e.key == " " && !document.activeElement.classList.contains('needs-space-key')) {
+        e.preventDefault();
+        audio.paused ? audio.play() : audio.pause();
     }
 });
     
