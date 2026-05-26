@@ -175,7 +175,7 @@ function moveCommentsToTimestamp(seconds){
         }
     });
     if (nearestComment) {
-        nearestComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        nearestComment.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     return nearestComment;
 }
