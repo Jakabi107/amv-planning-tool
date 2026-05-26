@@ -351,13 +351,11 @@ function renderComments() {
         div.className = 'comment-box';
         div.innerHTML = `
             <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
-            <p class="comment-text-inline"></p>
+            <p class="comment-text-inline">${formatComment(c.text)}</p>
             <button class="comment-delete-btn" title="Delete comment">
                 <img src="images/delete.svg" alt="Delete" class="comment-delete-icon" />
             </button>
         `;
-        // set comment text with textContent to prevent XSS
-        div.querySelector('.comment-text-inline').textContent = c.text;
         
         const btn = div.querySelector('.comment-delete-btn');
         btn.addEventListener('click', (e) => {
@@ -372,7 +370,13 @@ function renderComments() {
 }
 
 
+const HTTP_URL_REGEX = /(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])/g;
+function formatComment(commentText){
+    // First escape HTML to prevent XSS, then replace URLs with anchor tags
+    commentText = escapeHTML(commentText);
 
+    return commentText.replaceAll(HTTP_URL_REGEX, '<a href="$&" target="_blank">$&</a>');
+}
 
 
 // --- title management ---
