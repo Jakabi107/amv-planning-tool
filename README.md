@@ -45,7 +45,7 @@ The tool supports importing data in multiple formats via the upload interface:
 
 ## Getting Started
 
-Clone the repo and open index.html in your browser.
+Clone the repo and open index.html in your browser or be fancy and use 'docker compose up' and it will be hosted on [localhost:8000](localhost:8000).
 
 Or just visit the webpage with the deployed gh page:
 https://jakabi107.github.io/amv-planning-tool/
