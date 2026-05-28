@@ -8,6 +8,11 @@ All features are pretty straightforeward. You can change the type of File to imp
 
 Open the link: https://jakabi107.github.io/amv-planning-tool/
 
+Or host it yourself with:
+```console
+docker run -p 8000:8000 ghcr.io/jakabi107/amv-planning-tool:latest
+```
+
 
 ## Features
 
@@ -45,14 +50,25 @@ The tool supports importing data in multiple formats via the upload interface:
 
 ## Getting Started
 
-Clone the repo and open index.html in your browser or be fancy and use 'docker compose up' and it will be hosted on [localhost:8000](localhost:8000).
+**Externally:**
 
-Or just visit the webpage with the deployed gh page:
-https://jakabi107.github.io/amv-planning-tool/
+Open https://jakabi107.github.io/amv-planning-tool/
 
-All your work is automatically saved to your browser's local storage!
+**Docker:**
+``` console
+docker run -p 8000:8000 ghcr.io/jakabi107/amv-planning-tool:v2
+```
 
-But regularly save it to your machine. Just to be sure no Frontend magic messes you up :)
+**Locally:**
+
+Clone and open index.html or use docker compose.#
+
+
+
+
+
+> All your work is automatically saved to your browser's local storage!
+> But regularly save it to your machine. Just to be sure no Frontend magic messes you up :)
 
 
 
