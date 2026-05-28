@@ -1,27 +1,29 @@
 {
-  "name": "amv-tool",
-  "version": "1.0.0",
-  "description": "A lightweight web-based tool for planning and annotating videos to music. Synchronize lyrics, add timestamped comments, and organize your creative vision all in one place.",
-  "scripts": {
-    "test": "vitest",
-    "test:run": "vitest run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Jakabi107/amv-planning-tool.git"
-  },
-  "author": "Jakob Rietzler",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Jakabi107/amv-planning-tool/issues"
-  },
-  "homepage": "https://github.com/Jakabi107/amv-planning-tool#readme",
-  "devDependencies": {
-    "happy-dom": "^20.9.0",
-    "vitest": "^4.1.7"
-  },
-  "engineStrict": true,
-  "engines": {
-    "node": ">=22.22.3"
-  }
+	"name": "amv-tool",
+	"version": "1.0.0",
+	"description": "A lightweight web-based tool for planning and annotating videos to music. Synchronize lyrics, add timestamped comments, and organize your creative vision all in one place.",
+	"scripts": {
+		"test": "vitest",
+		"test:run": "vitest run",
+		"format": "prettier --use-tabs --write ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Jakabi107/amv-planning-tool.git"
+	},
+	"author": "Jakob Rietzler",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Jakabi107/amv-planning-tool/issues"
+	},
+	"homepage": "https://github.com/Jakabi107/amv-planning-tool#readme",
+	"devDependencies": {
+		"happy-dom": "^20.9.0",
+		"prettier": "^3.8.3",
+		"vitest": "^4.1.7"
+	},
+	"engineStrict": true,
+	"engines": {
+		"node": ">=22.22.3"
+	}
 }
