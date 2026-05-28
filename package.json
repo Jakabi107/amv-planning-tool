@@ -2,9 +2,9 @@
   "name": "amv-tool",
   "version": "1.0.0",
   "description": "A lightweight web-based tool for planning and annotating videos to music. Synchronize lyrics, add timestamped comments, and organize your creative vision all in one place.",
-  "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "repository": {
     "type": "git",
