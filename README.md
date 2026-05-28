@@ -4,10 +4,9 @@ A lightweight web-based tool for planning and annotating videos to music. Synchr
 
 ## Quickstart
 
-All features are pretty straightforeward. You can change the type of File to import, via the selector "Upload Project". 
+All features are pretty straightforeward. You can change the type of File to import, via the selector "Upload Project".
 
 Open the link: https://jakabi107.github.io/amv-planning-tool/
-
 
 ## Features
 
@@ -23,12 +22,12 @@ The tool supports importing data in multiple formats via the upload interface:
 
 ### Supported Formats
 
-| Data Type | Format | File Extension | Description |
-|-----------|--------|---|---|
-| **Audio** | MP3| `.mp3` | Audio track for your video |
-| **Lyrics** | LRC (Lyric) format | `.lrc` | Timestamped lyrics in standard LRC format: `[MM:SS.xx]Lyric text` |
-| **Comments** | JSON | `.json` | Array of comment objects: `[{"time": 12.5, "text": "Note here"}]` |
-| **Full Project** | AMVP (custom format) | `.amvp` | Complete project file with audio, lyrics, comments, and title |
+| Data Type        | Format               | File Extension | Description                                                       |
+| ---------------- | -------------------- | -------------- | ----------------------------------------------------------------- |
+| **Audio**        | MP3                  | `.mp3`         | Audio track for your video                                        |
+| **Lyrics**       | LRC (Lyric) format   | `.lrc`         | Timestamped lyrics in standard LRC format: `[MM:SS.xx]Lyric text` |
+| **Comments**     | JSON                 | `.json`        | Array of comment objects: `[{"time": 12.5, "text": "Note here"}]` |
+| **Full Project** | AMVP (custom format) | `.amvp`        | Complete project file with audio, lyrics, comments, and title     |
 
 ### How to Import
 
@@ -54,12 +53,8 @@ All your work is automatically saved to your browser's local storage!
 
 But regularly save it to your machine. Just to be sure no Frontend magic messes you up :)
 
-
-
-
-
-
 ## Credits & Licenses
 
 This project uses the following open-source assets:
-* [Material Symbols (Delete Icon)](https://fonts.google.com/icons) by Google, licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+- [Material Symbols (Delete Icon)](https://fonts.google.com/icons) by Google, licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).

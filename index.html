@@ -1,49 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMV Planning Tool</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="images/icon.png">
-</head>
-<body>
-    <header class="tools-header">
-        <button id="download-button" class="header-button">Download Project</button>
-        <button id="reset-button" class="header-button">Reset Project</button>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>AMV Planning Tool</title>
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="icon" type="image/png" href="images/icon.png" />
+	</head>
+	<body>
+		<header class="tools-header">
+			<button id="download-button" class="header-button">
+				Download Project
+			</button>
+			<button id="reset-button" class="header-button">Reset Project</button>
 
-        <select id="upload-select" class="styled-select">
-            <option selected="true" value="all">Upload Project</option>
-            <option value="audio">Upload Audio</option>
-            <option value="lyrics">Upload Lyrics</option>
-            <option value="comments">Upload Comments</option>
-        </select>
-        <input type="file" id="data-upload" accept=".amvp" class="styled-upload">    
-    
-    </header>
-    <header>
+			<select id="upload-select" class="styled-select">
+				<option selected="true" value="all">Upload Project</option>
+				<option value="audio">Upload Audio</option>
+				<option value="lyrics">Upload Lyrics</option>
+				<option value="comments">Upload Comments</option>
+			</select>
+			<input
+				type="file"
+				id="data-upload"
+				accept=".amvp"
+				class="styled-upload"
+			/>
+		</header>
+		<header>
+			<h2>AMV Planning Tool</h2>
+			<h1
+				id="title"
+				class="needs-typing"
+				contenteditable="plaintext-only"
+				onkeydown="preventEnter(event)"
+				onfocus="this.style.outline = 'none'"
+			>
+				Unnamed
+			</h1>
+			<audio id="audio-player" controls src=""></audio>
+			<input
+				type="file"
+				id="audio-upload"
+				accept="audio/*"
+				style="display: none"
+			/>
+			<input
+				type="file"
+				id="lyrics-upload"
+				accept=".lrc"
+				style="display: none"
+			/>
+			<input
+				type="file"
+				id="comments-upload"
+				accept=".json"
+				style="display: none"
+			/>
+		</header>
 
-        <h2>AMV Planning Tool</h2>
-        <h1 id="title" class="needs-typing" contenteditable="plaintext-only" onkeydown="preventEnter(event)" onfocus="this.style.outline='none'">Unnamed</h1>
-        <audio id="audio-player" controls src=""></audio>
-        <input type="file" id="audio-upload" accept="audio/*" style="display:none">
-        <input type="file" id="lyrics-upload" accept=".lrc" style="display:none">
-        <input type="file" id="comments-upload" accept=".json" style="display:none">
-    </header>
+		<div class="main-container">
+			<div class="lyric-timeline" id="lyric-timeline"></div>
 
-    <div class="main-container">
-        <div class="lyric-timeline" id="lyric-timeline"></div>
+			<div id="comment-section" class="comment-section">
+				<div class="comments-display" id="comments-display"></div>
 
-        <div id="comment-section" class="comment-section">
-            <div class="comments-display" id="comments-display"></div>
-            
-            <form class="comment-form" id="comment-form">
-                <input class="needs-typing" type="text" id="comment-input" placeholder="Add a comment at the current timestamp..." required>
-                <button type="submit">Comment</button>
-            </form>
-        </div>
-    </div>
-    <script src="utils.js" defer></script>
-    <script src="script.js" defer></script>
-</body>
+				<form class="comment-form" id="comment-form">
+					<input
+						class="needs-typing"
+						type="text"
+						id="comment-input"
+						placeholder="Add a comment at the current timestamp..."
+						required
+					/>
+					<button type="submit">Comment</button>
+				</form>
+			</div>
+		</div>
+		<script src="utils.js" defer></script>
+		<script src="script.js" defer></script>
+	</body>
 </html>
