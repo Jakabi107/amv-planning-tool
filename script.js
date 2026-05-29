@@ -52,8 +52,9 @@ class DataOutputManager {
 		this.titleElement.textContent = newTitle;
 	}
 
-	renderLyrics(lyrics) {
+	renderLyrics(rLyrics) {
 		this.lyricsDisplay.innerHTML = "";
+		let lyrics = rLyrics.toSorted((a, b) => a.time - b.time);
 
 		lyrics.forEach((l) => {
 			const div = document.createElement("div");
@@ -77,9 +78,9 @@ class DataOutputManager {
 		});
 	}
 
-	renderComments(comments) {
+	renderComments(rComments) {
 		// Sort comments chronologically by timestamp
-		comments.sort((a, b) => a.time - b.time);
+		let comments = rComments.toSorted((a, b) => a.time - b.time);
 
 		this.commentsDisplay.innerHTML = "";
 		comments.forEach((c) => {
