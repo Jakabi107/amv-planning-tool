@@ -31,11 +31,9 @@ const UPLOADTYPE_ALLOWED_FILES = {
 const downloadButton = document.getElementById("download-button");
 const resetButton = document.getElementById("reset-button");
 
-const localDBInstance = new LocalDB();
-
 class DataManager {
-	constructor(dbInstance) {
-		this.localDBInstance = dbInstance; // Store the LocalDB instance
+	constructor() {
+		this.localDBInstance = new LocalDB(); 
 		this.audioFileDataURL = null;
 		this.comments = [];
 		this.lyrics = [];
@@ -45,7 +43,7 @@ class DataManager {
 	changeTitle(newTitle, save = true, set = true) {
 		this.title = newTitle;
 		if (set) titleElement.textContent = newTitle;
-		if (save) this.saveProjectToCache(); // Updated call
+		if (save) this.saveProjectToCache(); 
 	}
 
 	changeAudio(dataURL, save = true) {
@@ -112,12 +110,12 @@ class DataManager {
 
 	async loadProjectFromCache() {
 		const data = await this.localDBInstance.getItem("lastProject");
-	if (data) {
-			loadProject(data); // `loadProject` will call `setAllDataObject` which in turn calls `saveProjectToCache`
+		if (data) {
+			this.setAllDataObject(data);
+		}
 	}
 }
-}
-const dataManager = new DataManager(localDBInstance); // Pass localDBInstance to DataManager constructor
+const dataManager = new DataManager(); // Pass localDBInstance to DataManager constructor
 
 // --- clicking and syncing ---
 // sync lyrics with audio
