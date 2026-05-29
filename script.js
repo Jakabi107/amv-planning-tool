@@ -34,7 +34,8 @@ const resetButton = document.getElementById("reset-button");
 const localDBInstance = new LocalDB();
 
 class DataManager {
-	constructor() {
+	constructor(dbInstance) {
+		this.localDBInstance = dbInstance; // Store the LocalDB instance
 		this.audioFileDataURL = null;
 		this.comments = [];
 		this.lyrics = [];
@@ -44,37 +45,37 @@ class DataManager {
 	changeTitle(newTitle, save = true, set = true) {
 		this.title = newTitle;
 		if (set) titleElement.textContent = newTitle;
-		if (save) saveLastProjectToCache();
+		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	changeAudio(dataURL, save = true) {
 		this.audioFileDataURL = dataURL;
 		audio.src = new Audio(dataURL).src;
-		if (save) saveLastProjectToCache();
+		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	changeLyrics(newLyrics, save = true) {
 		this.lyrics = newLyrics;
 		renderLyrics();
-		if (save) saveLastProjectToCache();
+		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	changeComments(newComments, save = true) {
 		this.comments = newComments;
 		renderComments();
-		if (save) saveLastProjectToCache();
+		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	appendComment(comment, save = true) {
 		this.comments.push(comment);
 		renderComments();
-		if (save) saveLastProjectToCache();
+		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	deleteComment(commentToDelete, save = true) {
 		this.comments = this.comments.filter((c) => c !== commentToDelete);
 		renderComments();
-		if (save) saveLastProjectToCache();
+		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	getAllDataObject() {
@@ -91,7 +92,7 @@ class DataManager {
 		this.changeAudio(data.audio, false);
 		this.changeLyrics(data.lyrics, false);
 		this.changeComments(data.comments, false);
-		saveLastProjectToCache();
+		this.saveProjectToCache(); // Updated call
 	}
 
 	resetAllData() {
@@ -102,8 +103,21 @@ class DataManager {
 			title: "unnamed",
 		});
 	}
+
+	// New methods for caching
+	async saveProjectToCache() {
+		const data = this.getAllDataObject();
+		await this.localDBInstance.setItem("lastProject", data);
+	}
+
+	async loadProjectFromCache() {
+		const data = await this.localDBInstance.getItem("lastProject");
+	if (data) {
+			loadProject(data); // `loadProject` will call `setAllDataObject` which in turn calls `saveProjectToCache`
+	}
 }
-const dataManager = new DataManager();
+}
+const dataManager = new DataManager(localDBInstance); // Pass localDBInstance to DataManager constructor
 
 // --- clicking and syncing ---
 // sync lyrics with audio
@@ -365,24 +379,6 @@ document.addEventListener("keydown", (e) => {
 	}
 });
 
-// --- cache management ---
-
-// save last project
-async function saveLastProjectToCache() {
-	const data = dataManager.getAllDataObject();
-	await localDBInstance.setItem("lastProject", data);
-}
-
-// load last project
-async function loadLastProjectFromCache() {
-	const data = await localDBInstance.getItem("lastProject");
-	if (data) {
-		loadProject(data);
-	}
-}
-
-// --- rendering ---
-
 // Render Lyrics to the UI
 function renderLyrics() {
 	dataManager.lyrics.sort((a, b) => a.time - b.time);
@@ -474,7 +470,8 @@ resetButton.addEventListener("click", () => {
 });
 
 // load last project on start
-loadLastProjectFromCache();
+dataManager.loadProjectFromCache(); // Updated call
 // Initial render on load
 renderComments();
 renderLyrics();
+
