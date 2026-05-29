@@ -31,8 +31,88 @@ const UPLOADTYPE_ALLOWED_FILES = {
 const downloadButton = document.getElementById("download-button");
 const resetButton = document.getElementById("reset-button");
 
+class DataOutputManager {
+	constructor(
+		audioElement, // Needed for setting the audio source
+		titleElement, // Needed for setting the title text
+		lyricsDisplay, // Needed for rendering lyrics
+		commentsDisplay, // Needed for rendering comments
+	) {
+		this.audioElement = audioElement;
+		this.titleElement = titleElement;
+		this.lyricsDisplay = lyricsDisplay;
+		this.commentsDisplay = commentsDisplay;
+	}
+
+	changeAudio(dataURL) {
+		this.audioElement.src = dataURL;
+	}
+
+	changeTitle(newTitle) {
+		this.titleElement.textContent = newTitle;
+	}
+
+	renderLyrics(lyrics) {
+		this.lyricsDisplay.innerHTML = "";
+
+		lyrics.forEach((l) => {
+			const div = document.createElement("div");
+			div.className = "lyric-line";
+			div.setAttribute("data-time", l.time);
+			div.innerHTML = `
+                <span class="lyric-text"></span>
+                <span class="timestamp">${formatTime(l.time)}</span>
+            `;
+
+			div.querySelector(".lyric-text").textContent = l.text; // set lyric text with textContent to prevent XSS
+
+			// Click Lyric to Skip Audio to that Timestamp
+			// automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
+			div.addEventListener("click", () => {
+				const targetTime = parseFloat(div.getAttribute("data-time"));
+				this.audioElement.currentTime = targetTime;
+			});
+
+			this.lyricsDisplay.appendChild(div);
+		});
+	}
+
+	renderComments(comments) {
+		// Sort comments chronologically by timestamp
+		comments.sort((a, b) => a.time - b.time);
+
+		this.commentsDisplay.innerHTML = "";
+		comments.forEach((c) => {
+			const div = document.createElement("div");
+			div.className = "comment-box";
+			div.setAttribute("data-time", c.time);
+			div.innerHTML = `
+                <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
+                <p class="comment-text-inline">${formatComment(c.text)}</p>
+                <button onclick="deleteComment(this)" class="comment-delete-btn" title="Delete comment">
+                    <img src="images/delete.svg" alt="Delete" class="comment-delete-icon" />
+                </button>
+            `;
+
+			const btn = div.querySelector(".comment-delete-btn");
+			btn.addEventListener("click", (e) => {
+				e.preventDefault();
+				if (confirm("Are you sure you want to delete this comment?")) {
+					deleteComment(c);
+				}
+			});
+
+			this.commentsDisplay.appendChild(div);
+		});
+	}
+
+	
+}
+
+
 class DataManager {
-	constructor() {
+	constructor(dataOutputManager) {
+		this.dataOutputManager = dataOutputManager;
 		this.localDBInstance = new LocalDB(); 
 		this.audioFileDataURL = null;
 		this.comments = [];
@@ -42,37 +122,37 @@ class DataManager {
 
 	changeTitle(newTitle, save = true, set = true) {
 		this.title = newTitle;
-		if (set) titleElement.textContent = newTitle;
+		if (set) this.dataOutputManager.changeTitle(newTitle);
 		if (save) this.saveProjectToCache(); 
 	}
 
 	changeAudio(dataURL, save = true) {
 		this.audioFileDataURL = dataURL;
-		audio.src = new Audio(dataURL).src;
+		this.dataOutputManager.changeAudio(dataURL);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	changeLyrics(newLyrics, save = true) {
 		this.lyrics = newLyrics;
-		renderLyrics();
+		this.dataOutputManager.renderLyrics(this.lyrics);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	changeComments(newComments, save = true) {
 		this.comments = newComments;
-		renderComments();
+		this.dataOutputManager.renderComments(this.comments);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	appendComment(comment, save = true) {
 		this.comments.push(comment);
-		renderComments();
+		this.dataOutputManager.renderComments(this.comments);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
 
 	deleteComment(commentToDelete, save = true) {
 		this.comments = this.comments.filter((c) => c !== commentToDelete);
-		renderComments();
+		this.dataOutputManager.renderComments(this.comments);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
 
@@ -115,7 +195,8 @@ class DataManager {
 		}
 	}
 }
-const dataManager = new DataManager(); // Pass localDBInstance to DataManager constructor
+const dataOutputManager = new DataOutputManager(audio, titleElement, lyricsDisplay, commentsDisplay);
+const dataManager = new DataManager(dataOutputManager); // Pass localDBInstance to DataManager constructor
 
 // --- clicking and syncing ---
 // sync lyrics with audio
@@ -377,62 +458,8 @@ document.addEventListener("keydown", (e) => {
 	}
 });
 
-// Render Lyrics to the UI
-function renderLyrics() {
-	dataManager.lyrics.sort((a, b) => a.time - b.time);
-
-	lyricsDisplay.innerHTML = "";
-
-	dataManager.lyrics.forEach((l) => {
-		const div = document.createElement("div");
-		div.className = "lyric-line";
-		div.setAttribute("data-time", l.time);
-		div.innerHTML = `
-            <span class="lyric-text"></span>
-            <span class="timestamp">${formatTime(l.time)}</span>
-        `;
-
-		div.querySelector(".lyric-text").textContent = l.text; // set lyric text with textContent to prevent XSS
-
-		// Click Lyric to Skip Audio to that Timestamp
-		// automatically adjusts layout of lyrics cause timeupdate of audio gets triggered
-		div.addEventListener("click", () => {
-			const targetTime = parseFloat(div.getAttribute("data-time"));
-			audio.currentTime = targetTime;
-		});
-
-		lyricsDisplay.appendChild(div);
-	});
-}
-
-// Render Comments to the UI
-function renderComments() {
-	// Sort comments chronologically by timestamp
-	dataManager.comments.sort((a, b) => a.time - b.time);
-
-	commentsDisplay.innerHTML = "";
-	dataManager.comments.forEach((c) => {
-		const div = document.createElement("div");
-		div.className = "comment-box";
-		div.setAttribute("data-time", c.time);
-		div.innerHTML = `
-            <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
-            <p class="comment-text-inline">${formatComment(c.text)}</p>
-            <button class="comment-delete-btn" title="Delete comment">
-                <img src="images/delete.svg" alt="Delete" class="comment-delete-icon" />
-            </button>
-        `;
-
-		const btn = div.querySelector(".comment-delete-btn");
-		btn.addEventListener("click", (e) => {
-			e.preventDefault();
-			if (confirm("Are you sure you want to delete this comment?")) {
-				dataManager.deleteComment(c);
-			}
-		});
-
-		commentsDisplay.appendChild(div);
-	});
+function deleteComment(c) {
+	dataManager.deleteComment(c);
 }
 
 const HTTP_URL_REGEX =
@@ -469,7 +496,3 @@ resetButton.addEventListener("click", () => {
 
 // load last project on start
 dataManager.loadProjectFromCache(); // Updated call
-// Initial render on load
-renderComments();
-renderLyrics();
-
