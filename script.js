@@ -1,3 +1,12 @@
+import {
+	LocalDB,
+	readFileAsDataURL,
+	readFileAsText,
+	downloadWithLink,
+	escapeHTML,
+	formatTime,
+} from "./utils.js";
+
 const audio = document.getElementById("audio-player");
 const titleElement = document.getElementById("title");
 
@@ -22,12 +31,14 @@ const UPLOADTYPE_ALLOWED_FILES = {
 const downloadButton = document.getElementById("download-button");
 const resetButton = document.getElementById("reset-button");
 
+const localDBInstance = new LocalDB();
+
 class DataManager {
 	constructor() {
 		this.audioFileDataURL = null;
 		this.comments = [];
 		this.lyrics = [];
-		this.title = "";
+		this.title = "unnamed";
 	}
 
 	changeTitle(newTitle, save = true, set = true) {
@@ -359,12 +370,12 @@ document.addEventListener("keydown", (e) => {
 // save last project
 async function saveLastProjectToCache() {
 	const data = dataManager.getAllDataObject();
-	await LocalDB.setItem("lastProject", data);
+	await localDBInstance.setItem("lastProject", data);
 }
 
 // load last project
 async function loadLastProjectFromCache() {
-	const data = await LocalDB.getItem("lastProject");
+	const data = await localDBInstance.getItem("lastProject");
 	if (data) {
 		loadProject(data);
 	}

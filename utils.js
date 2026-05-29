@@ -1,5 +1,5 @@
 // workaround
-function escapeHTML(str) {
+export function escapeHTML(str) {
 	// Create a dummy element in memory (not attached to the page)
 	const div = document.createElement("div");
 	// Set the user input as plain text
@@ -8,7 +8,7 @@ function escapeHTML(str) {
 	return div.innerHTML;
 }
 
-function preventEnter(event) {
+export function preventEnter(event) {
 	if (event.key === "Enter") {
 		event.preventDefault();
 		titleElement.blur();
@@ -16,13 +16,13 @@ function preventEnter(event) {
 }
 
 // Helper function to format seconds (e.g., 72 -> 1:12)
-function formatTime(seconds) {
+export function formatTime(seconds) {
 	const mins = Math.floor(seconds / 60);
 	const secs = Math.floor(seconds % 60);
 	return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 }
 
-function downloadWithLink(dataURL, filename = "output.json") {
+export function downloadWithLink(dataURL, filename = "output.json") {
 	const downloadAnchorNode = document.createElement("a");
 	downloadAnchorNode.setAttribute("href", dataURL);
 	downloadAnchorNode.setAttribute("download", filename);
@@ -31,7 +31,7 @@ function downloadWithLink(dataURL, filename = "output.json") {
 	downloadAnchorNode.remove();
 }
 
-function readFileAsDataURL(file) {
+export function readFileAsDataURL(file) {
 	return new Promise((resolve) => {
 		const reader = new FileReader();
 		reader.onload = () => resolve(reader.result);
@@ -39,7 +39,7 @@ function readFileAsDataURL(file) {
 	});
 }
 
-function readFileAsText(file) {
+export function readFileAsText(file) {
 	return new Promise((resolve) => {
 		const reader = new FileReader();
 		reader.onload = () => resolve(reader.result);
@@ -47,13 +47,14 @@ function readFileAsText(file) {
 	});
 }
 
-const LocalDB = {
-	dbName: "CachedDataDB",
-	// our object store
-	storeName: "keyValueStore",
-	version: 1,
-	db: null,
-
+export class LocalDB {
+	constructor() {
+		this.dbName = "CachedDataDB";
+		// our object store
+		this.storeName = "keyValueStore";
+		this.version = 1;
+		this.db = null;
+	}
 	// Internal helper to open the database
 	_getDB() {
 		return new Promise((resolve, reject) => {
@@ -73,7 +74,7 @@ const LocalDB = {
 			request.onsuccess = (event) => resolve(event.target.result);
 			request.onerror = (event) => reject(event.target.error);
 		});
-	},
+	}
 
 	// Save data (Like localStorage.setItem)
 	async setItem(key, value) {
@@ -89,7 +90,7 @@ const LocalDB = {
 			request.onsuccess = () => resolve();
 			request.onerror = (event) => reject(event.target.error);
 		});
-	},
+	}
 
 	// Retrieve data (Like localStorage.getItem)
 	async getItem(key) {
@@ -102,7 +103,7 @@ const LocalDB = {
 			request.onsuccess = (event) => resolve(event.target.result);
 			request.onerror = (event) => reject(event.target.error);
 		});
-	},
+	}
 
 	// Delete data (Like localStorage.removeItem)
 	async removeItem(key) {
@@ -115,5 +116,5 @@ const LocalDB = {
 			request.onsuccess = () => resolve();
 			request.onerror = (event) => reject(event.target.error);
 		});
-	},
-};
+	}
+}

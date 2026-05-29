@@ -7,7 +7,7 @@ let commentInput;
 let commentsDisplay;
 
 beforeAll(() => {
-    document.body.innerHTML = `
+	document.body.innerHTML = `
     <div id="comment-section" class="comment-section">
             <div class="comments-display" id="comments-display"></div>
 
@@ -23,20 +23,20 @@ beforeAll(() => {
             </form>
         </div>
     `;
-    commentForm = document.getElementById("comment-form");
-    commentInput = document.getElementById("comment-input");
-    commentsDisplay = document.getElementById("comments-display");
-    dataManager = new DataManager(false);
+	commentForm = document.getElementById("comment-form");
+	commentInput = document.getElementById("comment-input");
+	commentsDisplay = document.getElementById("comments-display");
+	dataManager = new DataManager(false);
 });
 
 beforeEach(() => {
-    // Clear comments before each test
-    dataManager.resetAllData();
+	// Clear comments before each test
+	dataManager.resetAllData();
 });
 
 test("exists", () => {
-    expect(dataManager).toBeDefined();
-    expect(commentForm).toBeDefined();
-    expect(commentInput).toBeDefined();
-    expect(commentsDisplay).toBeDefined();
+	expect(dataManager).toBeDefined();
+	expect(commentForm).toBeDefined();
+	expect(commentInput).toBeDefined();
+	expect(commentsDisplay).toBeDefined();
 });
