@@ -3,9 +3,3 @@ services:
     build: .
     ports:
       - "8000:8000"
-    develop:
-      watch:
-        - "*.html"
-        - "*.js"
-        - "*.css"
-        - "images/**/*"
