@@ -5,7 +5,8 @@
 	"scripts": {
 		"test": "vitest",
 		"test:run": "vitest run",
-		"format": "prettier --use-tabs --write ."
+		"format": "prettier --use-tabs --write .",
+		"run:dev": "vite"
 	},
 	"repository": {
 		"type": "git",
@@ -20,6 +21,7 @@
 	"devDependencies": {
 		"happy-dom": "^20.9.0",
 		"prettier": "^3.8.3",
+		"vite": "^8.0.14",
 		"vitest": "^4.1.7"
 	},
 	"engineStrict": true,

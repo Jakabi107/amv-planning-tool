@@ -30,7 +30,12 @@ const UPLOADTYPE_ALLOWED_FILES = {
 const downloadButton = document.getElementById("download-button");
 const resetButton = document.getElementById("reset-button");
 
-const dataOutputManager = new DataOutputManager(audio, titleElement, lyricsDisplay, commentsDisplay);
+const dataOutputManager = new DataOutputManager(
+	audio,
+	titleElement,
+	lyricsDisplay,
+	commentsDisplay,
+);
 const dataManager = new DataManager(dataOutputManager); // Pass localDBInstance to DataManager constructor
 
 // --- clicking and syncing ---
@@ -40,7 +45,6 @@ audio.addEventListener("timeupdate", () => {
 	const currentTime = audio.currentTime;
 
 	let lyricLineElements = document.querySelectorAll(".lyric-line");
-	
 
 	lyricLineElements.forEach((line, index) => {
 		const lineTime = parseInt(line.getAttribute("data-time"));
@@ -298,7 +302,7 @@ window.deleteComment = (id) => {
 	if (confirm("Are you sure you want to delete this comment?")) {
 		dataManager.deleteCommentById(id);
 	}
-}
+};
 
 // --- title management ---
 titleElement.addEventListener("input", () => {
