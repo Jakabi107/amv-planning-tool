@@ -105,9 +105,7 @@ class DataOutputManager {
 
 			this.commentsDisplay.appendChild(div);
 		});
-	}
-
-	
+	}	
 }
 
 
@@ -119,36 +117,51 @@ class DataManager {
 		this.comments = [];
 		this.lyrics = [];
 		this.title = "unnamed";
+		this.commentIdCounter = 0;
 	}
-
+	// title
 	changeTitle(newTitle, save = true, set = true) {
 		this.title = newTitle;
 		if (set) this.dataOutputManager.changeTitle(newTitle);
 		if (save) this.saveProjectToCache(); 
 	}
-
+	// audio
 	changeAudio(dataURL, save = true) {
 		this.audioFileDataURL = dataURL;
 		this.dataOutputManager.changeAudio(dataURL);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
-
+	// lyrics
 	changeLyrics(newLyrics, save = true) {
 		this.lyrics = newLyrics;
 		this.dataOutputManager.renderLyrics(this.lyrics);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
-
+	// comments
 	changeComments(newComments, save = true) {
+		this.commentIdCounter = 0; // Reset comment id counter
 		this.comments = newComments;
+		this.addIdsToComments(this.comments);
 		this.dataOutputManager.renderComments(this.comments);
 		if (save) this.saveProjectToCache(); // Updated call
 	}
 
+	addIdsToComments(newComments) {
+		newComments.forEach((c) => {
+			c.id = this.commentIdCounter++;
+		});
+	}
+
 	appendComment(comment, save = true) {
+		comment.id = this.commentIdCounter++;
 		this.comments.push(comment);
 		this.dataOutputManager.renderComments(this.comments);
 		if (save) this.saveProjectToCache(); // Updated call
+	}
+
+	deleteCommentById(commentId, save = true) {
+		let commentToDelete = this.comments.find((c) => c.id === commentId)[0];
+		this.deleteComment(commentToDelete, save);
 	}
 
 	deleteComment(commentToDelete, save = true) {
