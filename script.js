@@ -87,22 +87,14 @@ class DataOutputManager {
 			const div = document.createElement("div");
 			div.className = "comment-box";
 			div.setAttribute("data-time", c.time);
+			div.setAttribute("data-id", c.id);
 			div.innerHTML = `
                 <span class="comment-time" onclick="seekTo(${c.time})">[${formatTime(c.time)}]</span>
                 <p class="comment-text-inline">${formatComment(c.text)}</p>
-                <button onclick="deleteComment(this)" class="comment-delete-btn" title="Delete comment">
+                <button onclick="deleteComment(${c.id})" class="comment-delete-btn" title="Delete comment">
                     <img src="images/delete.svg" alt="Delete" class="comment-delete-icon" />
                 </button>
             `;
-
-			const btn = div.querySelector(".comment-delete-btn");
-			btn.addEventListener("click", (e) => {
-				e.preventDefault();
-				if (confirm("Are you sure you want to delete this comment?")) {
-					deleteComment(c);
-				}
-			});
-
 			this.commentsDisplay.appendChild(div);
 		});
 	}	
@@ -160,7 +152,7 @@ class DataManager {
 	}
 
 	deleteCommentById(commentId, save = true) {
-		let commentToDelete = this.comments.find((c) => c.id === commentId)[0];
+		let commentToDelete = this.comments.find((c) => c.id === commentId);
 		this.deleteComment(commentToDelete, save);
 	}
 
@@ -472,8 +464,10 @@ document.addEventListener("keydown", (e) => {
 	}
 });
 
-function deleteComment(c) {
-	dataManager.deleteComment(c);
+window.deleteComment = (id) => {
+	if (confirm("Are you sure you want to delete this comment?")) {
+		dataManager.deleteCommentById(id);
+	}
 }
 
 const HTTP_URL_REGEX =
